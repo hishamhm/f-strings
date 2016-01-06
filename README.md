@@ -15,9 +15,13 @@ in them will be evaluated and interpolated directly in the string.
 
     local f = 99
     local c = (f - 32) / 9 * 5
-    print(F"{f} degrees Fahrenheit is {c} degrees Celsius")
+    print(F"{f} degrees Fahrenheit is {c:%.2f} degrees Celsius")
 
-Any Lua expression can be inserted. See the `examples` directory for more examples.
+Almost any Lua expression can be inserted (apart from two minor parsing caveats: `":%"`
+is used as a separator for specifying formatting (according to the same rules of
+`string.format`), and curly braces within expressions must be well-nested).
+
+See the `examples` directory for more examples.
 
 ## Author
 

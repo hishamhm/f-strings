@@ -17,7 +17,8 @@ end
 local function format(_, str)
    local outer_env = _ENV or _G
    return (str:gsub("%b{}", function(block)
-      local code = block:match("{(.*)}")
+      local code, fmt = block:match("{(.*):(%%.*)}")
+      code = code or block:match("{(.*)}")
       local exp_env = {}
       setmetatable(exp_env, { __index = function(_, k)
          local stack_level = 5
@@ -36,7 +37,7 @@ local function format(_, str)
       end })
       local fn, err = load("return "..code, "expression `"..code.."`", "t", exp_env)
       if fn then
-         return tostring(fn())
+         return fmt and string.format(fmt, fn()) or tostring(fn())
       else
          error(err, 0)
       end         
