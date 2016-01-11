@@ -15,7 +15,7 @@ if _VERSION == "Lua 5.1" then
 end
 
 local function format(_, str)
-   local outer_env = _ENV or _G
+   local outer_env = _ENV or getfenv(1)
    return (str:gsub("%b{}", function(block)
       local code, fmt = block:match("{(.*):(%%.*)}")
       code = code or block:match("{(.*)}")

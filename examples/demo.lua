@@ -1,6 +1,8 @@
 
 local F = require("F")
 
+_G = nil
+
 a = "Hello"
 b = "World"
 print(F"{a} {b}")
@@ -13,7 +15,7 @@ print(F"Allows arbitrary expressions: one plus one is {1 + 1}")
 
 local t = { foo = "bar" }
 
-print(F"And values: t.foo is {t.foo}; print function is {_G.print}")
+print(F"And values: t.foo is {t.foo}; print function is {print}")
 
 do
    local h = "Hello"
