@@ -23,6 +23,35 @@ is used as a separator for specifying formatting (according to the same rules of
 
 See the `examples` directory for more examples.
 
+## Caveats
+
+`F` uses Lua's debug library to obtain at runtime the values of the variables defined in the current scope. However, this information is not always available, in which case F might return unexpected results.
+
+The first problematic situation is that `F` cannot see local variables when it is used in a tail-call position:
+
+    do
+      local g = function(x) return F'hello {x}' end
+      print(g("world")) -- prints 'hello nil' instead of 'hello world'
+    end
+
+The second problematic setting is that `F` can't see variables in outer functions when those variables are not referenced in any inner functions:
+
+    do
+      local x = "world"
+      (function()
+        print(F'hello {x}') -- prints 'hello nil' instead of 'hello world'
+      end)()
+    end
+
+One possible workaround is to pass the outer variable as an additional parameter to `F`. Although `F` ignores all arguments other than the template string, just using the outer variable is enough to cause Lua to package it into an upvalue, thus making it visible to `F`:
+
+    do
+      local x = "world"
+      (function()
+        print(F('hello {x}', x))
+      end)()
+    end
+
 ## Author
 
 Hisham Muhammad - [http://twitter.com/hisham_hm](@hisham_hm) - http://hisham.hm/

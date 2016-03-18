@@ -3,13 +3,13 @@ describe("string interpolation", function()
 	local assert = assert
 	it("works with literals", function()
 		assert.same("foo", F'{"foo"}')
-	end)
+	end);
 	it("works with locals", function()
 		do
 			local x = "foo"
 			assert.same("foo", F'{x}')
 		end
-	end)
+	end);
 	it("works with referenced upvalues", function()
 		do
 			local x = "foo"
@@ -18,15 +18,31 @@ describe("string interpolation", function()
 				assert.same("foo", F'{x}')
 			end)()
 		end
-	end)
+	end);
+	it("works with referenced upvalues (extra argument trick)", function()
+		do
+			local x = "foo"
+			(function()
+				-- F ignores the second argument
+				-- but just referencing `x` is enough...
+				assert.same("foo", F('{x}', x))
+			end)()
+		end
+	end);
 	it("fails with unreferenced upvalues", function()
 		do
+			local x = "foo"
 			(function()
-				local x = "foo"
-				return function()
-					assert.not_same("foo", F'{x}')
-				end
-			end)()()
+				assert.not_same("foo", F'{x}')
+			end)()
+		end
+	end);
+	it("fails when F is a tail-call", function()
+		do
+			local function g(x)
+				return F'{x}'
+			end
+			assert.same('nil', g("foo"))
 		end
 	end);
 	(_VERSION == "Lua 5.1" and it or pending)("works with setfenv'd functions", function()
