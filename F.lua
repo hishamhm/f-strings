@@ -1,4 +1,3 @@
-
 local F = {}
 
 local load = load
@@ -35,10 +34,16 @@ local function format(_, str)
       code = code or block:match("{(.*)}")
       local exp_env = {}
       setmetatable(exp_env, { __index = function(_, k)
-         local ok, value = scan_using(debug.getupvalue, debug.getinfo(6, "f").func, k)
-         if ok then return value end
-         ok, value = scan_using(debug.getlocal, 7, k)
-         if ok then return value end
+         local level = 6
+         while true do
+            local funcInfo = debug.getinfo(level, "f")
+            if not funcInfo then break end
+            local ok, value = scan_using(debug.getupvalue, funcInfo.func, k)
+            if ok then return value end
+            ok, value = scan_using(debug.getlocal, level + 1, k)
+            if ok then return value end
+            level = level + 1
+         end
          return rawget(outer_env, k)
       end })
       local fn, err = load("return "..code, "expression `"..code.."`", "t", exp_env)
