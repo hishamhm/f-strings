@@ -28,12 +28,9 @@ end
 
 local function snd(_, b) return b end
 
--- Refer to these below as 'package.loaded.F.ocb', and the reverse of *.ccb.
-F.ocb, F.ccb = '{', '}'
-
 local function format(_, str)
    local outer_env = _ENV and (snd(scan_using(debug.getlocal, 3, "_ENV")) or snd(scan_using(debug.getupvalue, debug.getinfo(2, "f").func, "_ENV")) or _ENV) or getfenv(2)
-   str = str:reverse():gsub('}}','}bcc.F.dedaol.egakcap{'):reverse():gsub('{{','{package.loaded.F.ocb}')
+   str = str:reverse():gsub('}}','})521(rahc.gnirts{'):reverse():gsub('{{','{string.char(123)}')
    return (str:gsub("%b{}", function(block)
       local code, fmt = block:match("{(.*):(%%.*)}")
       code = code or block:match("{(.*)}")
